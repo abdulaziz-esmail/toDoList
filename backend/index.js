@@ -2,7 +2,7 @@ const express = require("express")
 const cors = require("cors")
 const bodyParser = require("body-parser")
 const db = require('./db')
-
+const {v4: uuidv4} = require('uuid')
 const app = express()
 const PORT = 5000
 
@@ -17,6 +17,19 @@ app.get('/tasks',(req, res) => {
         res.json(results)
     })
 
+})
+
+// add new task
+
+app.post('/tasks', (req, res) =>{
+    const {title} = req.body
+    if(!title) return res.status(400).json({error: 'Title is required'})
+    const id = uuidv4()
+    db.query('INSERT INTO tasks (id, title) VALUES (?, ?)',[id, title], (err, result) => {
+        if(err) return res.status(500).json(err)
+        res.status(201).json({id, title, completed:false})
+
+    })
 })
 
 app.listen(PORT, () => {
