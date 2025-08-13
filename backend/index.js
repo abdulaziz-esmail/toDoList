@@ -8,6 +8,7 @@ const PORT = 5000
 
 app.use(cors())
 app.use(bodyParser.json())
+app.use(express.json())
 
 //fetch all tasks
 app.get('/tasks',(req, res) => {
@@ -22,7 +23,7 @@ app.get('/tasks',(req, res) => {
 // add new task
 
 app.post('/tasks', (req, res) =>{
-    const {title} = req.body
+    const title = req.body
     if(!title) return res.status(400).json({error: 'Title is required'})
     const id = uuidv4()
     db.query('INSERT INTO tasks (id, title) VALUES (?, ?)',[id, title], (err, result) => {
