@@ -45,6 +45,16 @@ app.put('/tasks/:id', (req, res) => {
     })
 })
 
+// delete a specific task
+
+app.delete('/tasks/:id', (req, res) => {
+    const {id} = req.params
+    db.query('DELETE FROM tasks WHERE id = ?', [id], (err) => {
+        if(err) return res.status(500).res.json(err)
+        res.json({message:'Task deleted'})
+    })
+})
+
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost: ${PORT}`)
 })
