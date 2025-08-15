@@ -23,13 +23,25 @@ app.get('/tasks',(req, res) => {
 // add new task
 
 app.post('/tasks', (req, res) =>{
-    const title = req.body
-    if(!title) return res.status(400).json({error: 'Title is required'})
+    
+    if(!req.body) return res.status(400).json({error: 'Title is required'})
+    const {title} = req.body
     const id = uuidv4()
     db.query('INSERT INTO tasks (id, title) VALUES (?, ?)',[id, title], (err, result) => {
         if(err) return res.status(500).json(err)
-        res.status(201).json({id, title, completed:false})
+        res.status(201).json({id, title, completed:Boolean(false)})
 
+    })
+})
+
+// modify a specific task
+
+app.put('/tasks/:id', (req, res) => {
+    const {id} = req.params
+    const {completed} = req.body
+    db.query('UPDATE tasks SET completed = ? WHERE id = ?', [completed, id], (err) => {
+        if(err) return res.status(500).json(err)
+        res.json({message : 'Task updated'})
     })
 })
 
